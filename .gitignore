@@ -1,0 +1,12 @@
+## Cache files for cmake:
+
+CMakeCache.txt
+cmake_install.cmake
+CMakeFiles/
+Makefile
+
+## Program files
+
+joinImages
+*.cpp.o
+

@@ -20,5 +20,12 @@ make
 
 Run the command as:
 ```bash
-./joinImages t0 dt tf h "Path/to/images/pattern.tif"
+./joinImages "Path/to/images/" t0 dt tf h 
 ```
+
+Where:
+- "Path/to/images/" : is the path to the images saved with the pattern "image_*.tif"
+- t0 : first frame
+- dt : frames to skip between images
+- tf : end frame
+- h : height of the final joined image (crop extra blank space)

@@ -29,3 +29,7 @@ Where:
 - dt : frames to skip between images
 - tf : end frame
 - h : height of the final joined image (crop extra blank space)
+
+## Result
+
+![Result image](joined.png)

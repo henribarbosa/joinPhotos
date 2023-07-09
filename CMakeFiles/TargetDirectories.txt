@@ -1,0 +1,3 @@
+/home/user/Área de Trabalho/Teste/JoinPhotos/CMakeFiles/rebuild_cache.dir
+/home/user/Área de Trabalho/Teste/JoinPhotos/CMakeFiles/joinImages.dir
+/home/user/Área de Trabalho/Teste/JoinPhotos/CMakeFiles/edit_cache.dir

@@ -4,7 +4,11 @@ Program to make series of images of fluidized beds to show evolution of the beds
 
 ## Install
 
-On CMakeLists.txt fix the opencv path for your computer.
+On CMakeLists.txt fix the [opencv](https://docs.opencv.org/4.x/d7/d9f/tutorial_linux_install.html) build path for your computer, for example **/home/user/opencv/build**.
+
+```cmake
+find_package( OpenCV REQUIRED PATHS /home/user/opencv/build NO_DEFAULT_PATH)
+```
 
 Run to configure the compiler.
 ```bash

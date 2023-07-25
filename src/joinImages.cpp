@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include "tclap/CmdLine.h"
 #include "tclap/ValueArg.h"
@@ -114,15 +115,16 @@ int join(std::string ImagesPath, int initFrame, int skipFrame, int endFrame, int
 		cv::putText(labelImage, "H/D", cv::Point(imageHeight/2 - 25, 60), cv::FONT_HERSHEY_DUPLEX, ImScale, cv::Scalar(0), 2);
 		cv::rotate(labelImage, labelImage, cv::ROTATE_90_COUNTERCLOCKWISE);
 	
+		int yInit = 5; // the bed image start after 5 diameters
 		std::stringstream heightlabel;
-		heightlabel << std::setfill(' ') << std::setw(3) << 0;
+		heightlabel << std::setfill(' ') << std::setw(3) << yInit;
 
 		// y-axis values
 		cv::Mat scaleImage(imageHeight, 200, CV_8U, cv::Scalar(255));
 		cv::Point origin(60,imageHeight);
 		cv::putText(scaleImage, heightlabel.str().c_str(), origin, cv::FONT_HERSHEY_DUPLEX, ImScale, cv::Scalar(0), 2);
 	
-		int heightTxt = yscale;
+		int heightTxt = yscale + yInit;
 		while (true)
 		{
 			heightlabel.str(std::string());
@@ -204,6 +206,15 @@ int join(std::string ImagesPath, int initFrame, int skipFrame, int endFrame, int
 			heightTxt += step;
 		}
 		cv::vconcat(joinedImage, timeLabelImage, joinedImage);
+	}
+	else // write file for plug analysis
+	{
+		std::ofstream file;
+		file.open("Files/characteristics.txt",std::ios::trunc);
+		file << "fps " << frameRate << std::endl;
+		file << "width " << left - right << std::endl;
+		file << "interval " << skipFrame << std::endl;
+		file.close();
 	}
 	//cv::imshow("JoinedImages", joinedImage);
 	cv::imwrite("joined.png", joinedImage);

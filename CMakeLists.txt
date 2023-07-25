@@ -3,4 +3,6 @@ project(joinImages)
 find_package( OpenCV REQUIRED PATHS /home/user/opencv/build NO_DEFAULT_PATH)
 add_executable( joinImages src/joinImages.cpp)
 target_link_libraries( joinImages ${OpenCV_LIBS})
+add_executable( plugMeasures src/plugMeasures.cpp)
+target_link_libraries( plugMeasures ${OpenCV_LIBS})
 

@@ -31,8 +31,10 @@ struct plug
 		file.close();
 	}
 
-	void printFinal(cv::Mat* exibt, int width)
+	void printFinal(cv::Mat* exibt, int width, int frameRate, int interval)
 	{ 
+		double dt = 1.0*interval / frameRate;
+
 		std::ifstream readFile;
 		readFile.open("Files/plug_" + std::to_string(label) + ".txt",
 				std::ios::app);
@@ -40,21 +42,45 @@ struct plug
 		std::ofstream writeFile;
 		writeFile.open("Files/plugs.txt", std::ios::app);
 		writeFile << label << " ";
+
+		std::ofstream celerityFile;
+		celerityFile.open("Files/celerities.txt", std::ios::app);
 		
-		int pointTop, pointBottom, pointTime, prePoint, printPoint;
-		readFile >> pointTime >> pointTop >> pointBottom;
+		int pointTop, pointBottom, pointTime, pointMid;
+		int prePointTop, prePointBottom, prePointMid;
+
+		readFile >> pointTime >> prePointTop >> prePointBottom;
 		writeFile << (exibt->rows - pointTop)*1.0/width << " " <<
 			(exibt->rows - pointBottom)*1.0/width << " ";
-		prePoint = (int)((pointTop + pointBottom) / 2);
+		prePointMid = (int)((prePointTop + prePointBottom) / 2);
+
 		while ( readFile >> pointTime >> pointTop >> pointBottom )
 		{
+			// plug positions
 			writeFile << (exibt->rows - pointTop)*1.0/width << " " <<
 			(exibt->rows - pointBottom)*1.0/width << " ";
-			printPoint = (int)((pointTop + pointBottom) / 2);
-			cv::line((*exibt), cv::Point((pointTime-2)*width,prePoint), 
-					cv::Point((pointTime-1)*width,printPoint),
+			
+			// middle point
+			pointMid = (int)((pointTop + pointBottom) / 2);
+			// visual display
+			cv::line((*exibt), cv::Point((pointTime-2)*width,prePointMid), 
+					cv::Point((pointTime-1)*width,pointMid),
 				cv::Scalar(0,0,255), 3);
-			prePoint = printPoint;
+
+			// plug celerities based on different regions
+			celerityFile << -(pointTop - pointBottom)*1.0/width << " "
+				<< -(pointTop - prePointTop)*1.0/width * dt << " "
+				<< -(pointBottom - prePointBottom)*1.0/width * dt << " "
+				<< -(pointMid - prePointMid)*1.0/width * dt << std::endl;
+
+//			std::cout << (pointTop - prePointTop)*1.0/width << std::endl;
+//			std::cout << dt << std::endl;
+
+			// update variables
+			prePointMid = pointMid;
+			prePointTop = pointTop;
+			prePointBottom = pointBottom;
+
 		}
 		writeFile << std::endl;
 
@@ -109,6 +135,7 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 		{
 			plug test;
 			int value = column.at<uchar>(j,0);
+			// beginning of the plug
 			if ( (not inPlug) and (value != 0) )
 			{
 				inPlug = true;
@@ -116,6 +143,7 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 				cv::circle(*exibt, cv::Point(window.x,j), 10, 
 						cv::Scalar(0,255,0), -1);
 			}
+			// end of the plug
 			else if ( inPlug and (value == 0) )
 			{
 				inPlug = false;
@@ -130,14 +158,17 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 				{
 					int distance = lastFrame[i].top - test.top;
 					std::cout << " d"<< distance << " ";
+					// not the correct plug if it goes downward
 					if ( distance < -10 )
 						continue;
 					distance = (distance < 0)?(-distance):distance; //absolute
+					// already found a better candidate
 					if ( distance > bestDistance )
 					{
 						std::cout << " d>" << bestDistance;
 						continue;
 					}
+					// wants to be part of a plug unused
 					if (not lastFrame[i].used)  
 					{
 						bestDistance = distance;
@@ -149,6 +180,8 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 						test.nextLabel = i;
 						std::cout << " : " << test.label;
 					}
+					// wants to be part of a used plug (needs to remove
+					// previous connection)
 					else if (distance < lastFrame[i].distance)
 					{
 						bestDistance = distance;
@@ -156,6 +189,7 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 						lastFrame[i].used = true;
 						currentFrame[currentFrame.size()-1].label = 0;
 						currentFrame[currentFrame.size()-1].used = false;
+						currentFrame[currentFrame.size()-1].frames = 0;
 						lastFrame[test.nextLabel].used = false;
 						test.used = true;
 						test.label = lastFrame[i].label;
@@ -178,25 +212,27 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 		{
 			if ( currentFrame[i].used )
 			{
-				currentFrame[i].printTmp();
+				currentFrame[i].printTmp(); // store values temporaly
 				currentFrame[i].used = false; // clean for next iteration
 			}
 			else 
 			{
 				currentLabel += 1;
-				currentFrame[i].label = currentLabel;
-				currentFrame[i].printTmp();
+				currentFrame[i].label = currentLabel; // creates new plug
+				currentFrame[i].printTmp(); //store values temporaly
 			}
 		}
 		for (int i = 0; i < lastFrame.size(); i++)
 		{
 			if ( (not lastFrame[i].used) and (lastFrame[i].frames > 5) )
 			{
-//				std::cout << lastFrame[i].label << " " << lastFrame[i].frames << std::endl;
-				lastFrame[i].printFinal(exibt, width);
+				std::cout << lastFrame[i].label << " " << lastFrame[i].frames << std::endl;
+//				// writes definitivily a plug to the final file when it is lost
+				lastFrame[i].printFinal(exibt, width, frameRate, interval);
 			}
 		}
 
+		// update variables
 		lastFrame.clear();
 		lastFrame = currentFrame;
 //		currentFrame.clear();
@@ -209,7 +245,12 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 	}
 	for (int i = 0; i < lastFrame.size(); i++)
 	{
-		lastFrame[i].printFinal(exibt, width);
+			// writes the plugs at final time
+		if (lastFrame[i].frames > 5)
+		{
+			std::cout << lastFrame[i].label << " " << lastFrame[i].frames << std::endl;
+			lastFrame[i].printFinal(exibt, width, frameRate, interval);
+		}
 	}
 
 }
@@ -220,6 +261,9 @@ int main()
 	std::ofstream file;
 	file.open("Files/plugs.txt", std::ios::trunc);
 	file << "Plugs (frame top bottom top bottom ...) unit of Diameters" << std::endl;
+	file.close();
+	file.open("Files/celerities.txt", std::ios::trunc);
+	file << "Celerities (plug_length top_celerity bottom_celerity center_celerity) unit of Diameters and Diameters/s" << std::endl;
 	file.close();
 	int ret = system("rm Files/plug_*.txt");
 

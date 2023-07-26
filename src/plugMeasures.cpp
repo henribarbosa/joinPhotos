@@ -126,7 +126,7 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 	
 	while (window.x < image->cols) 
 	{
-		count++; std::cout << "time: " << count << std::endl;
+		count++; //std::cout << "time: " << count << std::endl;
 		cv::Mat column = (*image)(window); // column examined
 		bool inPlug = false; // are we inside a plug?
 		std::vector<plug> currentFrame;
@@ -153,11 +153,11 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 						cv::Scalar(255,0,0), -1);
 
 				int bestDistance = 10000;
-				std::cout << "newplug: ";
+//				std::cout << "newplug: ";
 				for (int i = 0; i < lastFrame.size(); i++)
 				{
 					int distance = lastFrame[i].top - test.top;
-					std::cout << " d"<< distance << " ";
+//					std::cout << " d"<< distance << " ";
 					// not the correct plug if it goes downward
 					if ( distance < -10 )
 						continue;
@@ -165,7 +165,7 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 					// already found a better candidate
 					if ( distance > bestDistance )
 					{
-						std::cout << " d>" << bestDistance;
+//						std::cout << " d>" << bestDistance;
 						continue;
 					}
 					// wants to be part of a plug unused
@@ -178,7 +178,7 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 						test.label = lastFrame[i].label;
 						test.frames = lastFrame[i].frames + 1;
 						test.nextLabel = i;
-						std::cout << " : " << test.label;
+//						std::cout << " : " << test.label;
 					}
 					// wants to be part of a used plug (needs to remove
 					// previous connection)
@@ -195,10 +195,10 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 						test.label = lastFrame[i].label;
 						test.frames = lastFrame[i].frames + 1;
 						test.nextLabel = i;
-						std::cout << " : " << test.label;
+//						std::cout << " : " << test.label;
 					}
 				}
-				std::cout << "-> " << test.label << std::endl;
+//				std::cout << "-> " << test.label << std::endl;
 
 				currentFrame.push_back(test);
 //				std::cout << currentFrame.size() << " ";
@@ -226,7 +226,7 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 		{
 			if ( (not lastFrame[i].used) and (lastFrame[i].frames > 5) )
 			{
-				std::cout << lastFrame[i].label << " " << lastFrame[i].frames << std::endl;
+//				std::cout << lastFrame[i].label << " " << lastFrame[i].frames << std::endl;
 //				// writes definitivily a plug to the final file when it is lost
 				lastFrame[i].printFinal(exibt, width, frameRate, interval);
 			}
@@ -248,7 +248,7 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 			// writes the plugs at final time
 		if (lastFrame[i].frames > 5)
 		{
-			std::cout << lastFrame[i].label << " " << lastFrame[i].frames << std::endl;
+//			std::cout << lastFrame[i].label << " " << lastFrame[i].frames << std::endl;
 			lastFrame[i].printFinal(exibt, width, frameRate, interval);
 		}
 	}
@@ -287,7 +287,8 @@ int main()
 	cv::namedWindow("Processed", cv::WINDOW_NORMAL);
 //	cv::resizeWindow("Processed", 1200,50);
 	cv::imshow("Processed", exibit);
-	cv::waitKey(100);
+	cv::setWindowProperty("Processed", cv::WND_PROP_FULLSCREEN, cv::WINDOW_FULLSCREEN);
+	cv::waitKey(1000);
 
 
 	return 0;

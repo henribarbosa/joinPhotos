@@ -35,7 +35,7 @@ while [[ $i -le $n_iterations ]]; do
 
   # join images
 #  echo "${whileStart} , ${whileEnd}"
-  ./joinImages -p "$1" -i "${whileStart}" -d 2 -l "${whileEnd}" -v $2 -a 0
+  ./joinImages -p "$1" -i "${whileStart}" -d 5 -l "${whileEnd}" -v $2 -a 0
 
   # process plug information
   ./plugMeasures

@@ -43,11 +43,13 @@ struct plug
 		
 		int pointTop, pointBottom, pointTime, prePoint, printPoint;
 		readFile >> pointTime >> pointTop >> pointBottom;
-		writeFile << pointTop << " " << pointBottom << " ";
+		writeFile << (exibt->rows - pointTop)*1.0/width << " " <<
+			(exibt->rows - pointBottom)*1.0/width << " ";
 		prePoint = (int)((pointTop + pointBottom) / 2);
 		while ( readFile >> pointTime >> pointTop >> pointBottom )
 		{
-			writeFile << pointTop << " " << pointBottom << " ";
+			writeFile << (exibt->rows - pointTop)*1.0/width << " " <<
+			(exibt->rows - pointBottom)*1.0/width << " ";
 			printPoint = (int)((pointTop + pointBottom) / 2);
 			cv::line((*exibt), cv::Point((pointTime-2)*width,prePoint), 
 					cv::Point((pointTime-1)*width,printPoint),
@@ -217,7 +219,7 @@ int main()
 	// clear files
 	std::ofstream file;
 	file.open("Files/plugs.txt", std::ios::trunc);
-	file << "Plugs (frame top bottom top bottom ...)" << std::endl;
+	file << "Plugs (frame top bottom top bottom ...) unit of Diameters" << std::endl;
 	file.close();
 	int ret = system("rm Files/plug_*.txt");
 

@@ -31,19 +31,28 @@ struct plug
 		file.close();
 	}
 
-	void printFinal()
+	void printFinal(cv::Mat* exibt, int width)
 	{ 
 		std::ifstream readFile;
-		readFile.open("Files/plug_" + std::to_string(label) + ".txt", std::ios::app);
+		readFile.open("Files/plug_" + std::to_string(label) + ".txt",
+				std::ios::app);
 
 		std::ofstream writeFile;
 		writeFile.open("Files/plugs.txt", std::ios::app);
 		writeFile << label << " ";
 		
-		int pointTop, pointBottom, pointTime;
+		int pointTop, pointBottom, pointTime, prePoint, printPoint;
+		readFile >> pointTime >> pointTop >> pointBottom;
+		writeFile << pointTop << " " << pointBottom << " ";
+		prePoint = (int)((pointTop + pointBottom) / 2);
 		while ( readFile >> pointTime >> pointTop >> pointBottom )
 		{
 			writeFile << pointTop << " " << pointBottom << " ";
+			printPoint = (int)((pointTop + pointBottom) / 2);
+			cv::line((*exibt), cv::Point((pointTime-2)*width,prePoint), 
+					cv::Point((pointTime-1)*width,printPoint),
+				cv::Scalar(0,0,255), 3);
+			prePoint = printPoint;
 		}
 		writeFile << std::endl;
 
@@ -92,11 +101,11 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 		count++; std::cout << "time: " << count << std::endl;
 		cv::Mat column = (*image)(window); // column examined
 		bool inPlug = false; // are we inside a plug?
-		plug test;
 		std::vector<plug> currentFrame;
 
 		for (int j = 0; j < image->rows; j++)
 		{
+			plug test;
 			int value = column.at<uchar>(j,0);
 			if ( (not inPlug) and (value != 0) )
 			{
@@ -181,8 +190,8 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 		{
 			if ( (not lastFrame[i].used) and (lastFrame[i].frames > 5) )
 			{
-				std::cout << lastFrame[i].label << " " << lastFrame[i].frames << std::endl;
-				lastFrame[i].printFinal();
+//				std::cout << lastFrame[i].label << " " << lastFrame[i].frames << std::endl;
+				lastFrame[i].printFinal(exibt, width);
 			}
 		}
 
@@ -198,7 +207,7 @@ void iterateFrames(cv::Mat* image, cv::Mat* exibt, int frameRate,
 	}
 	for (int i = 0; i < lastFrame.size(); i++)
 	{
-		lastFrame[i].printFinal();
+		lastFrame[i].printFinal(exibt, width);
 	}
 
 }

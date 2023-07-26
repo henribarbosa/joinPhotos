@@ -287,7 +287,7 @@ int main()
 	cv::namedWindow("Processed", cv::WINDOW_NORMAL);
 //	cv::resizeWindow("Processed", 1200,50);
 	cv::imshow("Processed", exibit);
-	cv::waitKey(0);
+	cv::waitKey(100);
 
 
 	return 0;

@@ -1,3 +1,0 @@
-fps 1000
-width 53
-interval 5

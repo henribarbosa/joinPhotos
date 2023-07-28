@@ -12,7 +12,7 @@ massa=${massa:0:3}
 angulo=$(echo "$1" | awk -F _ '{print $7}')
 angulo=${angulo:0:(${#angulo}-1)}
 
-saveFile="PlugData_vazao_${vazao}_massa_${massa}_angulo_${angulo}.txt"
+saveFile="Results/PlugData_vazao_${vazao}_massa_${massa}_angulo_${angulo}.txt"
 rm $saveFile
 touch $saveFile
 echo "Celerities (plug_length top_celerity bottom_celerity center_celerity) unit of Diameters and Diameters/s" >> $saveFile

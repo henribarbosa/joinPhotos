@@ -9,8 +9,10 @@ vazao=$(echo "$1" | awk -F _ '{print $5}')
 vazao=${vazao:5:2}
 massa=$(echo "$1" | awk -F _ '{print $2}')
 massa=${massa:0:3}
+angulo=$(echo "$1" | awk -F _ '{print $7}')
+angulo=${angulo:0:(${#angulo}-1)}
 
-saveFile="PlugData_vazao_${vazao}_massa_${massa}.txt"
+saveFile="PlugData_vazao_${vazao}_massa_${massa}_angulo_${angulo}.txt"
 rm $saveFile
 touch $saveFile
 echo "Celerities (plug_length top_celerity bottom_celerity center_celerity) unit of Diameters and Diameters/s" >> $saveFile
@@ -35,7 +37,7 @@ while [[ $i -le $n_iterations ]]; do
 
   # join images
 #  echo "${whileStart} , ${whileEnd}"
-  ./joinImages -p "$1" -i "${whileStart}" -d 5 -l "${whileEnd}" -v $2 -a 0
+  echo "x" | ./joinImages -p "$1" -i "${whileStart}" -d 5 -l "${whileEnd}" -v $2 -a 0
 
   # process plug information
   ./plugMeasures

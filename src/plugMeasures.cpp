@@ -288,7 +288,7 @@ int main()
 //	cv::resizeWindow("Processed", 1200,50);
 	cv::imshow("Processed", exibit);
 	cv::setWindowProperty("Processed", cv::WND_PROP_FULLSCREEN, cv::WINDOW_FULLSCREEN);
-	cv::waitKey(1000);
+	cv::waitKey(1);
 
 
 	return 0;

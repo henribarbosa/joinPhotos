@@ -74,7 +74,7 @@ void firstPass(cv::Mat& image, int& right, int& left, int& bottom)
 		if (testSum[0] > minimumSum/10)
 		{
 			bottom = i;//image.rows-1; bottom of the bed
-//			std::cout << bottom << std::endl;
+//			std::cout << bottom << " " << testSum[0] << std::endl;
 			break;
 		}
 	}

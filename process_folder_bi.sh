@@ -22,9 +22,9 @@ echo "Celerities (plug_length top_celerity bottom_celerity center_celerity) unit
 #echo "${vazao} , ${massa}"
 
 # start and finnish frames number
-start="${files[0]:(${#files[0]}-9):5}"
+start="${files[1]:(${#files[1]}-9):5}"
 end="${files[-1]:(${#files[-1]}-9):5}"
-#echo "${files[0]:(${#files[0]}-9):5} , ${files[-1]:(${#files[-1]}-9):5}"
+echo "${files[1]:(${#files[1]}-9):5} , ${files[-1]:(${#files[-1]}-9):5}"
 
 # iterate over 500 frames
 n_iterations=$(echo "((${end} - ${start})/500)" | bc)

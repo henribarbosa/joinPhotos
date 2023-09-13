@@ -5,4 +5,6 @@ add_executable( joinImages src/joinImages.cpp)
 target_link_libraries( joinImages ${OpenCV_LIBS})
 add_executable( plugMeasures src/plugMeasures.cpp)
 target_link_libraries( plugMeasures ${OpenCV_LIBS})
+add_executable( waveMeasures src/waveMeasures.cpp)
+target_link_libraries( waveMeasures ${OpenCV_LIBS})
 

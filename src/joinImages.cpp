@@ -111,8 +111,8 @@ int join(std::string ImagesPath, int initFrame, int skipFrame, int endFrame, int
 	// y-axis label
 	if (makeLegend)
 	{
-		cv::Mat labelImage(60, imageHeight, CV_8U, cv::Scalar(255));
-		cv::putText(labelImage, "H/D", cv::Point(imageHeight/2 - 25, 60), cv::FONT_HERSHEY_DUPLEX, ImScale, cv::Scalar(0), 2);
+		cv::Mat labelImage(90, imageHeight, CV_8U, cv::Scalar(255));
+		cv::putText(labelImage, "H/D", cv::Point(imageHeight/2 - 25, 90), cv::FONT_HERSHEY_TRIPLEX, ImScale, cv::Scalar(0), 2);
 		cv::rotate(labelImage, labelImage, cv::ROTATE_90_COUNTERCLOCKWISE);
 	
 		int yInit = 5; // the bed image start after 5 diameters
@@ -120,9 +120,9 @@ int join(std::string ImagesPath, int initFrame, int skipFrame, int endFrame, int
 		heightlabel << std::setfill(' ') << std::setw(3) << yInit;
 
 		// y-axis values
-		cv::Mat scaleImage(imageHeight, 200, CV_8U, cv::Scalar(255));
-		cv::Point origin(60,imageHeight);
-		cv::putText(scaleImage, heightlabel.str().c_str(), origin, cv::FONT_HERSHEY_DUPLEX, ImScale, cv::Scalar(0), 2);
+		cv::Mat scaleImage(imageHeight, 150, CV_8U, cv::Scalar(255));
+		cv::Point origin(10,imageHeight);
+		cv::putText(scaleImage, heightlabel.str().c_str(), origin, cv::FONT_HERSHEY_TRIPLEX, ImScale, cv::Scalar(0), 2);
 	
 		int heightTxt = yscale + yInit;
 		while (true)
@@ -134,7 +134,7 @@ int join(std::string ImagesPath, int initFrame, int skipFrame, int endFrame, int
 			if (origin.y <= 0)
 				break;
 
-			cv::putText(scaleImage, heightlabel.str().c_str(), origin, cv::FONT_HERSHEY_DUPLEX, ImScale, cv::Scalar(0), 2);
+			cv::putText(scaleImage, heightlabel.str().c_str(), origin, cv::FONT_HERSHEY_TRIPLEX, ImScale, cv::Scalar(0), 2);
 			heightTxt += yscale;
 		}
 
@@ -178,15 +178,15 @@ int join(std::string ImagesPath, int initFrame, int skipFrame, int endFrame, int
 	if (makeLegend)
 	{
 		// puts the time stamps
-		cv::Mat timeLabelImage(180, joinedImage.cols, CV_8U, cv::Scalar(255));
-		cv::putText(timeLabelImage, "t [s]", cv::Point(joinedImage.cols/2 + 25, 150), cv::FONT_HERSHEY_DUPLEX, ImScale, cv::Scalar(0), 2);
+		cv::Mat timeLabelImage(200, joinedImage.cols, CV_8U, cv::Scalar(255));
+		cv::putText(timeLabelImage, "t [s]", cv::Point(joinedImage.cols/2 + 25, 150), cv::FONT_HERSHEY_TRIPLEX, ImScale, cv::Scalar(0), 2);
 
 		std::stringstream timelabel;
 		timelabel << std::setfill(' ') << std::setw(3) << 0;
 
 		// x-axis values
-		cv::Point xorigin(200,60);
-		cv::putText(timeLabelImage, timelabel.str().c_str(), xorigin, cv::FONT_HERSHEY_DUPLEX, ImScale, cv::Scalar(0), 2);
+		cv::Point xorigin(170,70);
+		cv::putText(timeLabelImage, timelabel.str().c_str(), xorigin, cv::FONT_HERSHEY_TRIPLEX, ImScale, cv::Scalar(0), 2);
 	
 		float endTime = (endFrame - initFrame) / (frameRate);
 		float step = endTime / (numberXdivisions * 1.0);
@@ -202,7 +202,7 @@ int join(std::string ImagesPath, int initFrame, int skipFrame, int endFrame, int
 			if (xorigin.x >= joinedImage.cols)
 				break;
 
-			cv::putText(timeLabelImage, timelabel.str().c_str(), xorigin, cv::FONT_HERSHEY_DUPLEX, ImScale, cv::Scalar(0), 2);
+			cv::putText(timeLabelImage, timelabel.str().c_str(), xorigin, cv::FONT_HERSHEY_TRIPLEX, ImScale, cv::Scalar(0), 2);
 			heightTxt += step;
 		}
 		cv::vconcat(joinedImage, timeLabelImage, joinedImage);
@@ -231,7 +231,7 @@ int main(int argc, char** argv)
 	int initFrame, skipFrame, endFrame; // first frame, frames to skip ans last frame
 	bool makeLegend = true;
 	int yscale = 5, numberXdivisions = 5; // H/D smallest division and number of times in x axis
-	float textScale = 0.04; // text scale for labels
+	float textScale = 0.05; // text scale for labels
 	std::string ImagesPath; // path to the frames
 
 	try

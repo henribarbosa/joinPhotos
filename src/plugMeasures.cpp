@@ -69,9 +69,9 @@ struct plug
 
 			// plug celerities based on different regions
 			celerityFile << -(pointTop - pointBottom)*1.0/width << " "
-				<< -(pointTop - prePointTop)*1.0/width * dt << " "
-				<< -(pointBottom - prePointBottom)*1.0/width * dt << " "
-				<< -(pointMid - prePointMid)*1.0/width * dt << std::endl;
+				<< -(pointTop - prePointTop)*1.0/width / dt << " "
+				<< -(pointBottom - prePointBottom)*1.0/width / dt << " "
+				<< -(pointMid - prePointMid)*1.0/width / dt << std::endl;
 
 //			std::cout << (pointTop - prePointTop)*1.0/width << std::endl;
 //			std::cout << dt << std::endl;
@@ -288,7 +288,8 @@ int main()
 //	cv::resizeWindow("Processed", 1200,50);
 	cv::imshow("Processed", exibit);
 	cv::setWindowProperty("Processed", cv::WND_PROP_FULLSCREEN, cv::WINDOW_FULLSCREEN);
-	cv::waitKey(1);
+	cv::imwrite("plugs.png", exibit);
+	cv::waitKey(0);
 
 
 	return 0;

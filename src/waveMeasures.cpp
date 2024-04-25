@@ -27,9 +27,9 @@ struct brightnessRow
 		heights.clear();
 		double dHeight = (frameHeight - 20) * (1.0 / (numberHeights - 1.0)); 
 		for (int i=0; i<numberHeights; i++) {
-			pixelsHeight.push_back(int(10+i*dHeight));
+			pixelsHeight.push_back(int(frameHeight - 10-i*dHeight));
 //			std::cout << i << " : " << dHeight << "  " << (10.0+i*dHeight)<< std::endl;
-			heights.push_back((10.0+i*dHeight)/diameter);
+			heights.push_back((frameHeight - 10.0-i*dHeight)/diameter);
 		}
 	}
 
@@ -101,7 +101,7 @@ void iterateFrames(cv::Mat* image, int width, brightnessRow& levels)
 										   
 		for (int j = 0; j < levels.numberHeights; j++)
 		{
-			levels.brightness[j] = column.at<uchar>(j,0);
+			levels.brightness[j] = column.at<uchar>(levels.pixelsHeight[j],0);
 		}
 
 		levels.printFrame();
@@ -121,13 +121,13 @@ int main()
 
 	// setup struct to save data
 	brightnessRow levels;
-	levels.numberHeights = 11;
+	levels.numberHeights = 51;
 	levels.diameter = width;
 
 	// open joined image
 	cv::Mat image = cv::imread("joined.png", cv::IMREAD_GRAYSCALE);
-//	cv::Mat exibit;
-//	cv::cvtColor(image, exibit, cv::COLOR_GRAY2RGB);
+	cv::Mat exibit;
+	cv::cvtColor(image, exibit, cv::COLOR_GRAY2RGB);
 	levels.frameHeight = image.rows;
 	levels.calculateHeights();
 	levels.makeFile();
@@ -137,12 +137,19 @@ int main()
 
 	iterateFrames(&processedImage, width, levels);
 
+//	for ( int i = 0; i < levels.numberHeights; i++)
+//	{
+//		cv::line(exibit, cv::Point(0,levels.pixelsHeight[i]), 
+//				cv::Point(exibit.cols, levels.pixelsHeight[i]), 
+//				cv::Scalar(0,0,255),3);
+//	}
+
 	// graphic window to display velocity of the particles
 //	cv::namedWindow("Processed", cv::WINDOW_NORMAL);
 //	cv::resizeWindow("Processed", 1200,50);
 //	cv::imshow("Processed", exibit);
 //	cv::setWindowProperty("Processed", cv::WND_PROP_FULLSCREEN, cv::WINDOW_FULLSCREEN);
-//	cv::waitKey(1);
+//	cv::waitKey(0);
 
 
 	return 0;
